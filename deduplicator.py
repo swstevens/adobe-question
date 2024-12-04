@@ -1,8 +1,9 @@
+import sys
 import json
 from datetime import datetime
 
 class Logger:
-    def __init__(self,log_file):
+    def __init__(self,log_file='tests/log.txt'):
         self.log_file = log_file
     def print(self, message):
         print(message)
@@ -10,7 +11,7 @@ class Logger:
             timestamp = datetime.now().strftime('[%Y-%m-%d %H:%M:%S] ')
             f.write(timestamp + message + "\n")
 class Processor:
-    def __init__(self,filename,logfile):
+    def __init__(self,filename,logfile='tests/log.txt'):
         self.unique_ids = {}
         self.unique_emails = {}
         with open(filename, 'r') as input_file:
@@ -18,7 +19,7 @@ class Processor:
         self.num_elements = len(self.input_data)
         self.final_elements = [0 for _ in range(self.num_elements)]
         self.logger = Logger(logfile)
-        self.logger.print(f"Initial Data: {self.input_data}")
+        self.logger.print(f"Starting Process. Initial Data: {self.input_data}")
 
     def remove_by_id(self,cur_id):
         if cur_id in self.unique_ids:
@@ -56,7 +57,7 @@ class Processor:
             self.final_elements[i] = 1
         return
 
-    def generate_file(self,filename):
+    def generate_file(self,filename='out.json'):
         self.logger.print("Parsing JSON Content")
         if not self.final_elements:
             self.process_json()
@@ -72,14 +73,21 @@ class Processor:
         with open(filename,'w+') as output_file:
             # json format here is somewhat hardcoded. assumption made due to singular example given
             json.dump({'leads':output},output_file,indent=0)
-        self.logger.print("Process Complete!")
+        self.logger.print("Process Complete!\n")
             
 
 
 def main():
-    processor = Processor('leads.json')
+    if len(sys.argv) <= 1:
+        print("Must specify in-file. Out File Optional.")
+        return
+
+    processor = Processor(sys.argv[1])
     processor.process_json()
-    processor.generate_file('leads_out.json')
+    if len(sys.argv) >= 3:
+        processor.generate_file(sys.argv[2])
+    else:
+        processor.generate_file()
 
 if __name__ == '__main__':
     main()
