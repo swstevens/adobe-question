@@ -11,6 +11,7 @@ class TestJSONProcessing(unittest.TestCase):
                 ]        
         # Run your processing function
         for file, expected in files:
+            print()
             print(f"running test for {file}")
             in_file = f"tests/{file}.json"
             out_file = f"tests/{file}_out.json"
