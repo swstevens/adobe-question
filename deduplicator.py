@@ -9,41 +9,51 @@ class Processor:
         self.num_elements = len(self.input_data)
         self.current_elements = [0 for _ in range(self.num_elements)]
 
-    def remove_by_id(self,curID):
-        if curID in self.unique_ids:
-            self.current_elements[self.unique_ids[curID]] = 0
-            del self.unique_ids[curID]
+    def remove_by_id(self,cur_id):
+        if cur_id in self.unique_ids:
+            other_email = self.input_data[self.unique_ids[cur_id]]['email']
+            self.current_elements[self.unique_ids[cur_id]] = 0
+            del self.unique_emails[other_email]
+            del self.unique_ids[cur_id]
 
-    def remove_by_email(self,curEmail):
-        if curEmail in self.unique_emails:
-            self.current_elements[self.unique_emails[curEmail]] = 0
-            del self.unique_emails[curEmail]
+            
+
+    def remove_by_email(self,cur_email):
+        if cur_email in self.unique_emails:
+            otherID = self.input_data[self.unique_emails[cur_email]]['_id']
+            self.current_elements[self.unique_emails[cur_email]] = 0
+            del self.unique_emails[cur_email]
+            del self.unique_ids[otherID]
     
     def process_json(self):
+        # check, in order, if there are any conflicts. If there are, remove the previous 
         for i in range(self.num_elements):
-            curEmail = self.input_data[i]['email']
-            curID = self.input_data[i]['_id']
-            if curEmail in self.unique_emails:
-                self.remove_by_email(curEmail)
-            if curID in self.unique_ids:
-                self.remove_by_id(curID)
-            self.unique_emails[curEmail] = i
-            self.unique_ids[curID] = i
+            cur_email = self.input_data[i]['email']
+            cur_id = self.input_data[i]['_id']
+            if cur_email in self.unique_emails:
+                self.remove_by_email(cur_email)
+            if cur_id in self.unique_ids:
+                self.remove_by_id(cur_id)
+            self.unique_emails[cur_email] = i
+            self.unique_ids[cur_id] = i
             self.current_elements[i] = 1
         
             print(self.current_elements)
         return
 
     def generate_file(self,filename):
-        if not filename:
-            return
         if not self.current_elements:
             self.process_json()
+        
+        # gather final json elements
         output =  []
         for i in range(self.num_elements):
             if self.current_elements[i]:
                 output.append(self.input_data[i])
+
+        # output elements to file
         with open(filename,'w+') as output_file:
+            # json format here is somewhat hardcoded. assumption made due to singular example given
             json.dump({'leads':output},output_file,indent=0)
             
 
