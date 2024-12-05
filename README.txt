@@ -1,3 +1,19 @@
+Usage:
+
+To run on a custom file:
+python3 deduplicator.py [in_file.json] [out_file.json]
+
+Or, for an executable:
+./deduplicator.exe [in_file.json] [out_file.json]
+
+Out file is optional, but in file is required. Logs are mirrored in the console, but can also be found at tests/logs.txt.
+
+To run the test file:
+python3 test.py
+
+
+----------------------------------------------------------------------------------------------------------
+
 Programming Challenge:
 
 Take a variable number of identically structured json records and de-duplicate the set.
@@ -40,10 +56,11 @@ generate_file(output_loc)
 Because we work through the elements linearly, conflicts can be handled sequentially, allowing for O(N) time complexity. Due to use of dictionaries, lookup time in the event of a conflict is O(1).
 Space complexity is O(N) due to loading the entire json into memory. 
 
--------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
 
 My implementation makes the assumption that at any given time, there should be only one instance of any ID and any email. If a conflict is encountered, the previous element is removed from the final output entirely. The previous id and email are then available for use again. 
 My implementation also makes the assumption that elements are given in the json in order of entryDate. Further implementation could be added during the Class init to sort by Datetime if elements are not given in order.
+Due to the limitations of the json module, the format of the output json file is slightly different, but the content is correct.
 
 See the following scenarios:
 - id exclusive conflict then conflict with old email

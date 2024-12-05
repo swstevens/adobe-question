@@ -4,17 +4,17 @@ import json
 
 class TestJSONProcessing(unittest.TestCase):
     def test_json_processing(self):        
-        files = [('leads','tests/expected_leads.json','tests/logs.txt'),
-                    ('id_then_new_email','tests/id_then_new_email_expected.json','tests/logs.txt'),
-                    ('id_then_old_email','tests/id_then_old_email_expected.json', 'tests/logs.txt'),    
-                    ('double_conflict','tests/double_conflict_expected.json', 'tests/logs.txt'),    
+        files = [('leads','tests/expected_leads.json','tests/log.txt'),
+                    ('id_then_new_email','tests/id_then_new_email_expected.json','tests/log.txt'),
+                    ('id_then_old_email','tests/id_then_old_email_expected.json', 'tests/log.txt'),    
+                    ('double_conflict','tests/double_conflict_expected.json', 'tests/log.txt'),    
                 ]        
         # Run your processing function
         for file, expected, log_file in files:
             print()
             print(f"running test for {file}")
             in_file = f"tests/{file}.json"
-            out_file = f"tests/{file}_out.json"
+            out_file = f"tests/temp/{file}_out.json"
             processor = Processor(in_file, log_file)
             processor.process_json()
             processor.generate_file(out_file)
